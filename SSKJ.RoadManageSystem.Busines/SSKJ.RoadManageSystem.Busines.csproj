@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SSKJ.RoadManageSystem.IBusines\SSKJ.RoadManageSystem.IBusines.csproj" />
+    <ProjectReference Include="..\SSKJ.RoadManageSystem.IRepository\SSKJ.RoadManageSystem.IRepository.csproj" />
+    <ProjectReference Include="..\SSKJ.RoadManageSystem.Models\SSKJ.RoadManageSystem.Models.csproj" />
+    <ProjectReference Include="..\SSKJ.RoadManageSystem.Utility\SSKJ.RoadManageSystem.Utility.csproj" />
+  </ItemGroup>
+
+</Project>
