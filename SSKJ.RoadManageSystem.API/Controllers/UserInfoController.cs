@@ -36,7 +36,7 @@ namespace SSKJ.RoadManageSystem.API.Controllers
                     user.UserId = user.Account = user.RoleId = "System";
                     user.RealName = "系统管理员";
                 }
-                else if (UserInfo.RoleId == "PrjManger")
+                else if (UserInfo.RoleId == "PrjManager")
                 {
                     var _user = await sysUserBll.GetEntityAsync(UserInfo.UserId);
                     user = Utility.Tools.MapperUtils.MapTo<User, UserInfoModel>(_user);
