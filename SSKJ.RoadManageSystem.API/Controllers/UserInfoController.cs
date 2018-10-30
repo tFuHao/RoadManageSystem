@@ -10,6 +10,7 @@ using SSKJ.RoadManageSystem.Models.SystemModel;
 
 namespace SSKJ.RoadManageSystem.API.Controllers
 {
+    [Route("api/UserInfo/[action]")]
     public class UserInfoController : BaseController
     {
         private readonly IAuthorizeBusines authorizeBll;
