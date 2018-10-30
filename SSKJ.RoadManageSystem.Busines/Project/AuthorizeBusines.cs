@@ -36,37 +36,53 @@ namespace SSKJ.RoadManageSystem.Busines.Project
         /// <param name="objectId">用户ID或角色ID</param>
         /// <param name="dataBaseName"></param>
         /// <returns></returns>
-        public async Task<IEnumerable<Module>> GetModuleAuthorizes(int category, string objectId, string dataBaseName)
+        public async Task<IEnumerable<Module>> GetModuleAuthorizes(string moduleId, int category, string objectId, string dataBaseName)
         {
             var modules = await moduleRepo.GetListAsync(m => m.EnabledMark == 1);
             var _modules = new List<Module>();
             if (objectId == "System")
             {
-                _modules = modules.ToList().FindAll(m => m.ParentId == "0" || m.ModuleId == "c1d4085e-df18-4584-8315-f14da229f6c9");
+                _modules = modules.ToList().FindAll(m => m.ModuleId == "c1d4085e-df18-4584-8315-f14da229f6c9");
                 _modules.AddRange(GetModules(modules, "c1d4085e-df18-4584-8315-f14da229f6c9").ToList());
             }
             else if (objectId == "PrjManager")
             {
-                _modules = modules.ToList().FindAll(m => m.ParentId == "0" || m.ModuleId == "ff01c3d3-9690-4848-8001-066831f6250c");
+                _modules = modules.ToList().FindAll(m => m.ModuleId == "ff01c3d3-9690-4848-8001-066831f6250c");
                 _modules.ToList().AddRange(GetModules(modules, "ff01c3d3-9690-4848-8001-066831f6250c").ToList());
             }
             else if (objectId == "PrjAdmin")
             {
-                var ids = new List<string>();
-                var mod = GetModules(modules, "c1d4085e-df18-4584-8315-f14da229f6c9").ToList();
-                mod.ToList().AddRange(GetModules(modules, "ff01c3d3-9690-4848-8001-066831f6250c").ToList());
-                ids = mod.Select(s => s.ModuleId).ToList();
-                ids.AddRange(new List<string>
+                if (string.IsNullOrEmpty(moduleId))
+                {
+                    var ids = new List<string>();
+                    var mod = GetModules(modules, "c1d4085e-df18-4584-8315-f14da229f6c9").ToList();
+                    mod.ToList().AddRange(GetModules(modules, "ff01c3d3-9690-4848-8001-066831f6250c").ToList());
+                    ids = mod.Select(s => s.ModuleId).ToList();
+                    ids.AddRange(new List<string>
                 {
                     "c1d4085e-df18-4584-8315-f14da229f6c9",
                     "ff01c3d3-9690-4848-8001-066831f6250c"
                 });
-                _modules = modules.ToList().FindAll(m => !(ids.Any(id => id == m.ModuleId)));
+                    _modules = modules.ToList().FindAll(m => !(ids.Any(id => id == m.ModuleId)));
+                }
+                else
+                {
+                    _modules = GetModules(modules, moduleId).ToList();
+                    _modules.Add(modules.Single(m => m.ModuleId == moduleId));
+                }
             }
             else
             {
-                var authorizes = await authorizeRepo.GetListAsync(a => a.Category == category && a.ObjectId == objectId && a.ItemType == 1, dataBaseName);
-                _modules = modules.ToList().FindAll(m => authorizes.Any(a => a.ItemId == m.ModuleId));
+                if (string.IsNullOrEmpty(moduleId))
+                {
+                    var authorizes = await authorizeRepo.GetListAsync(a => a.Category == category && a.ObjectId == objectId && a.ItemType == 1, dataBaseName);
+                    _modules = modules.ToList().FindAll(m => m.ParentId == "0" && authorizes.Any(a => a.ItemId == m.ModuleId));
+                }
+                else
+                {
+                    var authorizes = await authorizeRepo.GetListAsync(a => a.Category == category && a.ObjectId == objectId && a.ItemType == 1, dataBaseName);
+                    _modules = modules.ToList().FindAll(m => authorizes.Any(a => a.ItemId == m.ModuleId));
+                }
             }
 
             //return TreeData.ModuleTreeJson(modules.ToList());
@@ -85,7 +101,7 @@ namespace SSKJ.RoadManageSystem.Busines.Project
         /// <param name="objectId">用户ID或角色ID</param>
         /// <param name="dataBaseName"></param>
         /// <returns></returns>
-        public async Task<IEnumerable<ModuleButton>> GetButtonAuthorizes(int category, string objectId, string dataBaseName)
+        public async Task<IEnumerable<ModuleButton>> GetButtonAuthorizes(string moduleId, int category, string objectId, string dataBaseName)
         {
             var modules = await moduleRepo.GetListAsync(m => m.EnabledMark == 1);
             var buttons = await buttonRepo.GetListAsync();
@@ -104,17 +120,33 @@ namespace SSKJ.RoadManageSystem.Busines.Project
             }
             else if (objectId == "PrjAdmin")
             {
-                var _modules = GetModules(modules, "ff01c3d3-9690-4848-8001-066831f6250c").Select(m => m.ModuleId).ToList();
-                _modules.Add("ff01c3d3-9690-4848-8001-066831f6250c");
-                _modules.AddRange(GetModules(modules, "c1d4085e-df18-4584-8315-f14da229f6c9").Select(m => m.ModuleId).ToList());
-                _modules.Add("c1d4085e-df18-4584-8315-f14da229f6c9");
+                if (string.IsNullOrEmpty(moduleId))
+                {
+                    var _modules = GetModules(modules, "2c7cd727-c4a2-4cfa-befa-28ead34dd3dc").Select(m => m.ModuleId).ToList();
+                    _modules.Add("2c7cd727-c4a2-4cfa-befa-28ead34dd3dc");
 
-                _buttons = buttons.ToList().FindAll(m => !(_modules.Any(id => id == m.ModuleId)));
+                    _buttons = buttons.ToList().FindAll(m => _modules.Any(id => id == m.ModuleId));
+                }
+                else
+                {
+                    var _modules = GetModules(modules, moduleId).Select(m => m.ModuleId).ToList();
+                    _modules.Add(moduleId);
+
+                    _buttons = buttons.ToList().FindAll(m => _modules.Any(id => id == m.ModuleId));
+                }
             }
             else
             {
-                var authorizes = await authorizeRepo.GetListAsync(a => a.Category == category && a.ObjectId == objectId && a.ItemType == 2, dataBaseName);
-                _buttons = buttons.ToList().FindAll(m => authorizes.Any(a => a.ItemId == m.ModuleButtonId));
+                if (!string.IsNullOrEmpty(moduleId))
+                {
+                    var _modules = GetModules(modules, moduleId).Select(m => m.ModuleId).ToList();
+                    _modules.Add(moduleId);
+
+                    var authorizes = await authorizeRepo.GetListAsync(a => a.Category == category && a.ObjectId == objectId && a.ItemType == 2, dataBaseName);
+                    _buttons = buttons.ToList().FindAll(m => _modules.Any(id => id == m.ModuleId) && authorizes.Any(a => a.ItemId == m.ModuleButtonId));
+                }
+                else
+                    return _buttons;
             }
 
             //return TreeData.ButtonTreeJson(buttons.OrderBy(o => o.SortCode).ToList());
@@ -128,7 +160,7 @@ namespace SSKJ.RoadManageSystem.Busines.Project
         /// <param name="objectId">用户ID或角色ID</param>
         /// <param name="dataBaseName"></param>
         /// <returns></returns>
-        public async Task<IEnumerable<ModuleColumn>> GetColumnAuthorizes(int category, string objectId, string dataBaseName)
+        public async Task<IEnumerable<ModuleColumn>> GetColumnAuthorizes(string moduleId, int category, string objectId, string dataBaseName)
         {
             var modules = await moduleRepo.GetListAsync(m => m.EnabledMark == 1);
             var columns = await columnRepo.GetListAsync();
@@ -147,16 +179,32 @@ namespace SSKJ.RoadManageSystem.Busines.Project
             }
             else if (objectId == "PrjAdmin")
             {
-                var _modules = GetModules(modules, "ff01c3d3-9690-4848-8001-066831f6250c").Select(m => m.ModuleId).ToList();
-                _modules.Add("ff01c3d3-9690-4848-8001-066831f6250c");
-                _modules.AddRange(GetModules(modules, "c1d4085e-df18-4584-8315-f14da229f6c9").Select(m => m.ModuleId).ToList());
-                _modules.Add("c1d4085e-df18-4584-8315-f14da229f6c9");
-                _columns = columns.ToList().FindAll(m => !(_modules.Any(id => id == m.ModuleId)));
+                if (string.IsNullOrEmpty(moduleId))
+                {
+                    var _modules = GetModules(modules, "2c7cd727-c4a2-4cfa-befa-28ead34dd3dc").Select(m => m.ModuleId).ToList();
+                    _modules.Add("2c7cd727-c4a2-4cfa-befa-28ead34dd3dc");
+                    _columns = columns.ToList().FindAll(m => _modules.Any(id => id == m.ModuleId));
+                }
+                else
+                {
+                    var _modules = GetModules(modules, moduleId).Select(m => m.ModuleId).ToList();
+                    _modules.Add(moduleId);
+
+                    _columns = _columns.ToList().FindAll(m => _modules.Any(id => id == m.ModuleId));
+                }
             }
             else
             {
-                var authorizes = await authorizeRepo.GetListAsync(a => a.Category == category && a.ObjectId == objectId && a.ItemType == 3, dataBaseName);
-                _columns = columns.ToList().FindAll(m => authorizes.Any(a => a.ItemId == m.ModuleColumnId));
+                if (!string.IsNullOrEmpty(moduleId))
+                {
+                    var _modules = GetModules(modules, moduleId).Select(m => m.ModuleId).ToList();
+                    _modules.Add(moduleId);
+
+                    var authorizes = await authorizeRepo.GetListAsync(a => a.Category == category && a.ObjectId == objectId && a.ItemType == 3, dataBaseName);
+                    _columns = columns.ToList().FindAll(m => _modules.Any(id => id == m.ModuleId) && authorizes.Any(a => a.ItemId == m.ModuleColumnId));
+                }
+                else
+                    return _columns;
             }
 
             return _columns.ToList().OrderBy(o => o.SortCode);
@@ -175,7 +223,7 @@ namespace SSKJ.RoadManageSystem.Busines.Project
             else if (objectId == "PrjAdmin")
             {
                 var routes = await routeRepo.GetListAsync(dataBaseName);
-                return routes.OrderBy(o => o.CreateDate).ToList().RouteTreeJson(); 
+                return routes.OrderBy(o => o.CreateDate).ToList().RouteTreeJson();
             }
             else
             {
@@ -189,13 +237,14 @@ namespace SSKJ.RoadManageSystem.Busines.Project
         public async Task<PermissionModel> GetModuleAndRoutePermission(int category, string objectId, string dataBaseName)
         {
             var existList = await authorizeRepo.GetListAsync(a => a.Category == category && a.ObjectId == objectId, dataBaseName);
-            var moduleList = await moduleRepo.GetListAsync(m => m.EnabledMark == 1 && m.ModuleId != "c1d4085e-df18-4584-8315-f14da229f6c9" && m.ModuleId != "ff01c3d3-9690-4848-8001-066831f6250c");
+            var moduleList = await moduleRepo.GetListAsync(m => m.EnabledMark == 1 && m.ModuleId != "c1d4085e-df18-4584-8315-f14da229f6c9" && m.ModuleId != "ff01c3d3-9690-4848-8001-066831f6250c" && m.ModuleId != "2c7cd727-c4a2-4cfa-befa-28ead34dd3dc");
             var moduleTreeList = new List<TreeEntity>();
             var moduleChecked = new List<TreeEntity>();
             var moduleHalfChecked = new List<string>();
 
             var moduleIds = GetModules(moduleList, "c1d4085e-df18-4584-8315-f14da229f6c9").Select(m => m.ModuleId);
             moduleIds.ToList().AddRange(GetModules(moduleList, "ff01c3d3-9690-4848-8001-066831f6250c").Select(m => m.ModuleId));
+            moduleIds.ToList().AddRange(GetModules(moduleList, "2c7cd727-c4a2-4cfa-befa-28ead34dd3dc").Select(m => m.ModuleId));
 
             moduleList = moduleList.ToList().FindAll(m => !(moduleIds.Any(id => id == m.ModuleId)));
 

@@ -22,7 +22,7 @@ namespace SSKJ.RoadManageSystem.Utility.Tools
                 con.Close();
                 return await CreateTableAsync(dataBaseName);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return false;
             }
