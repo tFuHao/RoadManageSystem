@@ -8,28 +8,49 @@ namespace SSKJ.RoadManageSystem.API.Controllers
 {
     public class BaseController : Controller
     {
-        public UserTokenInfoModel userTokenInfo;
+        public UserTokenInfoModel UserInfo;
         public override void OnActionExecuting(ActionExecutingContext context)
         {
-            try
-            {
-                string strToken = "";
-                if (Request.Headers.TryGetValue("x-access-token", out StringValues token))
-                    strToken = token.ToString();
-                var userInfo = Utility.Tools.TokenUtils.ToObject<UserTokenInfoModel>(strToken);
+            string strToken = "";
+            if (Request.Headers.TryGetValue("x-access-token", out StringValues token))
+                strToken = token.ToString();
 
-                userTokenInfo = userInfo;
-            }
-            catch (Exception)
+            if (string.IsNullOrEmpty(strToken))
             {
-
+                context.Result = new BadRequestObjectResult(new { type = 0, message = "登录超时，请重新登录!" });
+                return;
             }
+
+            var userInfo = Utility.Tools.TokenUtils.ToObject<UserTokenInfoModel>(strToken);
+            if (string.IsNullOrEmpty(userInfo.UserId))
+            {
+                context.Result = new BadRequestObjectResult(new { type = 0, message = "登录超时，请重新登录!" });
+                return;
+            }
+            UserInfo = userInfo;
             base.OnActionExecuting(context);
         }
-
-        public UserTokenInfoModel GetUserInfo()
+        //成功
+        public IActionResult Success(object data)
         {
-            return userTokenInfo;
+            return Ok(new { type = 1, data });
+        }
+        public IActionResult Success()
+        {
+            return Ok(new { type = 1, message = "操作成功!" });
+        }
+        //失败
+        public IActionResult Fail(string message = "")
+        {
+            if (string.IsNullOrEmpty(message))
+                return Ok(new { type = 0, message = "操作失败!" });
+            else
+                return Ok(new { type = 0, message });
+        }
+        //错误
+        public IActionResult Error(string message)
+        {
+            return BadRequest(new { type = -1, message });
         }
     }
 }

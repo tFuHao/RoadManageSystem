@@ -5,15 +5,18 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.1.0" />
+    <PackageReference Include="Viyi.Util" Version="1.1.2" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\SSKJ.RoadManageSystem.DependencyInjection\SSKJ.RoadManageSystem.DependencyInjection.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="SSKJ.RoadDesignCenter.DependencyInjection">
+      <HintPath>..\PluginsDLL\SSKJ.RoadDesignCenter.DependencyInjection.dll</HintPath>
+    </Reference>
   </ItemGroup>
   
 </Project>
