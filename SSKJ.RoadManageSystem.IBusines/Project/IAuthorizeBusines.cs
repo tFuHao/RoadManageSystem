@@ -16,7 +16,7 @@ namespace SSKJ.RoadManageSystem.IBusines.Project
         /// <param name="objectId">用户ID或角色ID</param>
         /// <param name="dataBaseName"></param>
         /// <returns></returns>
-        Task<IEnumerable<Module>> GetModuleAuthorizes(int category, string objectId, string dataBaseName);
+        Task<IEnumerable<Module>> GetModuleAuthorizes(string moduleId, int category, string objectId, string dataBaseName);
 
         /// <summary>
         /// 获取功能按钮权限
@@ -25,7 +25,7 @@ namespace SSKJ.RoadManageSystem.IBusines.Project
         /// <param name="objectId">用户ID或角色ID</param>
         /// <param name="dataBaseName"></param>
         /// <returns></returns>
-        Task<IEnumerable<ModuleButton>> GetButtonAuthorizes(int category, string objectId, string dataBaseName);
+        Task<IEnumerable<ModuleButton>> GetButtonAuthorizes(string moduleId, int category, string objectId, string dataBaseName);
 
         /// <summary>
         /// 获取功能视图权限
@@ -34,7 +34,7 @@ namespace SSKJ.RoadManageSystem.IBusines.Project
         /// <param name="objectId">用户ID或角色ID</param>
         /// <param name="dataBaseName"></param>
         /// <returns></returns>
-        Task<IEnumerable<ModuleColumn>> GetColumnAuthorizes(int category, string objectId, string dataBaseName);
+        Task<IEnumerable<ModuleColumn>> GetColumnAuthorizes(string moduleId, int category, string objectId, string dataBaseName);
         Task<string> GetRouteAuthorizes(int category, string objectId, string dataBaseName);
 
         Task<Models.PermissionModel> GetModuleAndRoutePermission(int category, string objectId, string dataBaseName);

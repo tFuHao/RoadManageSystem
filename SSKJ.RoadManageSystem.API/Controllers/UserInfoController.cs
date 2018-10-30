@@ -25,7 +25,7 @@ namespace SSKJ.RoadManageSystem.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetUserPermission()
+        public async Task<IActionResult> GetUserPermission(string moduleId)
         {
             try
             {
@@ -50,11 +50,13 @@ namespace SSKJ.RoadManageSystem.API.Controllers
                 var authorize = new AuthorizeModel
                 {
                     UserInfo = user,
-                    ModuleAuthorizes = await authorizeBll.GetModuleAuthorizes(2, UserInfo.RoleId, UserInfo.DataBaseName),
-                    ButtonAuthorizes = await authorizeBll.GetButtonAuthorizes(2, UserInfo.RoleId, UserInfo.DataBaseName),
-                    ColumnAuthorizes = await authorizeBll.GetColumnAuthorizes(2, UserInfo.RoleId, UserInfo.DataBaseName),
-                    RouteAuthorizes = await authorizeBll.GetRouteAuthorizes(2, UserInfo.RoleId, UserInfo.DataBaseName)
+                    ModuleAuthorizes = await authorizeBll.GetModuleAuthorizes(moduleId, 2, UserInfo.RoleId, UserInfo.DataBaseName),
+                    ButtonAuthorizes = await authorizeBll.GetButtonAuthorizes(moduleId, 2, UserInfo.RoleId, UserInfo.DataBaseName),
+                    ColumnAuthorizes = await authorizeBll.GetColumnAuthorizes(moduleId, 2, UserInfo.RoleId, UserInfo.DataBaseName)
                 };
+                if (!string.IsNullOrEmpty(moduleId))
+                    authorize.RouteAuthorizes = await authorizeBll.GetRouteAuthorizes(2, UserInfo.RoleId, UserInfo.DataBaseName);
+
                 return Success(authorize);
             }
             catch (Exception ex)
@@ -64,7 +66,7 @@ namespace SSKJ.RoadManageSystem.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetUserInfo()
+        public async Task<IActionResult> GetPersonalInfo()
         {
             try
             {

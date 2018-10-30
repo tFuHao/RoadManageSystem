@@ -17,14 +17,14 @@ namespace SSKJ.RoadManageSystem.API.Controllers
 
             if (string.IsNullOrEmpty(strToken))
             {
-                context.Result = new BadRequestObjectResult(new { type = 0, message = "登录超时，请重新登录!" });
+                context.Result = new BadRequestObjectResult(new { type = -2, message = "登录超时，请重新登录!" });
                 return;
             }
 
             var userInfo = Utility.Tools.TokenUtils.ToObject<UserTokenInfoModel>(strToken);
             if (string.IsNullOrEmpty(userInfo.UserId))
             {
-                context.Result = new BadRequestObjectResult(new { type = 0, message = "登录超时，请重新登录!" });
+                context.Result = new BadRequestObjectResult(new { type = -2, message = "登录超时，请重新登录!" });
                 return;
             }
             UserInfo = userInfo;
@@ -35,9 +35,12 @@ namespace SSKJ.RoadManageSystem.API.Controllers
         {
             return Ok(new { type = 1, data });
         }
-        public IActionResult Success()
+        public IActionResult Success(string message = "")
         {
-            return Ok(new { type = 1, message = "操作成功!" });
+            if (string.IsNullOrEmpty(message))
+                return Ok(new { type = 1, message = "操作成功!" });
+            else
+                return Ok(new { type = 1, message });
         }
         //失败
         public IActionResult Fail(string message = "")
