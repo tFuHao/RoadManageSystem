@@ -59,16 +59,17 @@ namespace SSKJ.RoadManageSystem.Busines.Project
                     mod.ToList().AddRange(GetModules(modules, "ff01c3d3-9690-4848-8001-066831f6250c").ToList());
                     ids = mod.Select(s => s.ModuleId).ToList();
                     ids.AddRange(new List<string>
-                {
-                    "c1d4085e-df18-4584-8315-f14da229f6c9",
-                    "ff01c3d3-9690-4848-8001-066831f6250c"
-                });
-                    _modules = modules.ToList().FindAll(m => !(ids.Any(id => id == m.ModuleId)));
+                    {
+                        "c1d4085e-df18-4584-8315-f14da229f6c9",
+                        "ff01c3d3-9690-4848-8001-066831f6250c"
+                    });
+                    _modules = modules.ToList().FindAll(m => m.ParentId == "0" && !(ids.Any(id => id == m.ModuleId)));
+                    _modules.AddRange(GetModules(modules, "2c7cd727-c4a2-4cfa-befa-28ead34dd3dc").ToList());
                 }
                 else
                 {
                     _modules = GetModules(modules, moduleId).ToList();
-                    _modules.Add(modules.Single(m => m.ModuleId == moduleId));
+                    //_modules.Add(modules.Single(m => m.ModuleId == moduleId));
                 }
             }
             else
@@ -81,7 +82,7 @@ namespace SSKJ.RoadManageSystem.Busines.Project
                 else
                 {
                     var authorizes = await authorizeRepo.GetListAsync(a => a.Category == category && a.ObjectId == objectId && a.ItemType == 1, dataBaseName);
-                    _modules = modules.ToList().FindAll(m => authorizes.Any(a => a.ItemId == m.ModuleId));
+                    _modules = modules.ToList().FindAll(m => m.ModuleId == moduleId && m.ParentId != "0" && authorizes.Any(a => a.ItemId == m.ModuleId));
                 }
             }
 
