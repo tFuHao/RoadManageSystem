@@ -69,7 +69,7 @@ namespace SSKJ.RoadManageSystem.IBusines
         /// </summary>
         /// <param name="dataBaseName">数据库名称</param>
         /// <returns></returns>
-        Task<IEnumerable<T>> GetListAsync(string dataBaseName = null);
+        Task<IEnumerable<T>> GetListAsync(string dataBaseName = null);       
 
         /// <summary>
         /// 修改一个实体

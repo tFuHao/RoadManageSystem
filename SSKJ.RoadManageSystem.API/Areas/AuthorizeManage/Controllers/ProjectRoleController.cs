@@ -43,7 +43,7 @@ namespace SSKJ.RoadManageSystem.API.Areas.AuthorizeManage.Controllers
         {
             var result = await RoleBus.GetListAsync(e => true, e => e.SortCode, true, pageSize, pageIndex, UserInfo.DataBaseName);
             var users = await roleUserBll.GetListAsync(UserInfo.DataBaseName);
-            return Success(new
+            return SuccessData(new
             {
                 data = result.Item1.Select(role => new
                 {
@@ -68,7 +68,7 @@ namespace SSKJ.RoadManageSystem.API.Areas.AuthorizeManage.Controllers
                     input.CreateUserId = UserInfo.UserId;
                     var result = await RoleBus.CreateAsync(input, UserInfo.DataBaseName);
                     if (result)
-                        return Success();
+                        return SuccessMes();
                     return Fail();
 
                 }
@@ -83,7 +83,7 @@ namespace SSKJ.RoadManageSystem.API.Areas.AuthorizeManage.Controllers
                     entity.ModifyUserId = UserInfo.UserId;
                     var result = await RoleBus.UpdateAsync(entity, UserInfo.DataBaseName);
                     if (result)
-                        return Success();
+                        return SuccessMes();
                     return Fail();
                 }
             }
@@ -99,7 +99,7 @@ namespace SSKJ.RoadManageSystem.API.Areas.AuthorizeManage.Controllers
             {
                 var result = await RoleBus.DeleteAsync(list, UserInfo.DataBaseName);
                 if (result)
-                    return Success();
+                    return SuccessMes();
                 return Fail();
             }
             catch (Exception ex)
@@ -119,7 +119,7 @@ namespace SSKJ.RoadManageSystem.API.Areas.AuthorizeManage.Controllers
             {
                 var roleUsers = await roleUserBll.GetListAsync(r => r.ObjectId == roleId, UserInfo.DataBaseName);
                 var allUsers = await UserBus.GetListAsync(e => e.EnabledMark == 1 && e.RoleId != "PrjAdmin", UserInfo.DataBaseName);
-                return Success(new { checkeds = roleUsers.Select(r => r.UserId), users = allUsers });
+                return SuccessData(new { checkeds = roleUsers.Select(r => r.UserId), users = allUsers });
             }
             catch (Exception ex)
             {
@@ -190,7 +190,7 @@ namespace SSKJ.RoadManageSystem.API.Areas.AuthorizeManage.Controllers
 
                 var result = await roleUserBll.CreateAsync(list, UserInfo.DataBaseName);
                 if (result)
-                    return Success();
+                    return SuccessMes();
                 return Fail();
             }
             catch (Exception ex)
@@ -213,7 +213,7 @@ namespace SSKJ.RoadManageSystem.API.Areas.AuthorizeManage.Controllers
             {
                 var result = await AuthorizeBus.SavePermission(objectId, UserInfo.UserId, 2, modules, buttons, columns, routes, UserInfo.DataBaseName);
                 if (result)
-                    return Success();
+                    return SuccessMes();
                 return Fail();
             }
             catch (Exception ex)

@@ -37,7 +37,7 @@ namespace SSKJ.RoadManageSystem.API.Areas.SystemManage.Controllers
                 else
                     data = await moduleBll.GetTreeListAsync(f => true);
 
-                return Success(data);
+                return SuccessData(data);
             }
             catch (Exception ex)
             {
@@ -54,7 +54,7 @@ namespace SSKJ.RoadManageSystem.API.Areas.SystemManage.Controllers
             else
                 data = await buttonBll.GetTreeListAsync(f => true);
 
-            return Success(data);
+            return SuccessData(data);
         }
 
         [HttpGet]
@@ -66,13 +66,13 @@ namespace SSKJ.RoadManageSystem.API.Areas.SystemManage.Controllers
             else
                 data = await columnBll.GetListAsync();
 
-            return Success(data.OrderBy(o => o.SortCode).ToList());
+            return SuccessData(data.OrderBy(o => o.SortCode).ToList());
         }
 
         [HttpPost]
         public IActionResult ButtonListToTree(List<ModuleButton> list)
         {
-            return Success(buttonBll.ButtonListToTree(list));
+            return SuccessData(buttonBll.ButtonListToTree(list));
         }
 
         [HttpPost]
@@ -124,7 +124,7 @@ namespace SSKJ.RoadManageSystem.API.Areas.SystemManage.Controllers
                             return Fail();
                         }
                     }
-                    return Success();
+                    return SuccessMes();
                 }
                 return Fail();
             }
@@ -150,7 +150,7 @@ namespace SSKJ.RoadManageSystem.API.Areas.SystemManage.Controllers
                 await columnBll.DeleteAsync(columns);
                 await moduleBll.DeleteAsync(modules);
 
-                return Success();
+                return SuccessMes();
             }
             catch (Exception ex)
             {

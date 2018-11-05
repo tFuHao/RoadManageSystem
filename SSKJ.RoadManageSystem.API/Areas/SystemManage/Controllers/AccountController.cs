@@ -26,7 +26,7 @@ namespace SSKJ.RoadManageSystem.API.Areas.SystemManage.Controllers
             try
             {
                 var data = await sysUserBll.GetListAsync(e => true, e => e.CreateDate, true, pageSize, pageIndex);
-                return Success(new
+                return SuccessData(new
                 {
                     data = data.Item1,
                     count = data.Item2
@@ -44,7 +44,7 @@ namespace SSKJ.RoadManageSystem.API.Areas.SystemManage.Controllers
             try
             {
                 var data = await areaBll.GetListAsync();
-                return Success(data);
+                return SuccessData(data);
             }
             catch (Exception ex)
             {

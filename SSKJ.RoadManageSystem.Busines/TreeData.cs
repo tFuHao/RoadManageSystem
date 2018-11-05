@@ -91,5 +91,34 @@ namespace SSKJ.RoadManageSystem.Busines
             strJson.Append("]");
             return strJson.ToString();
         }
+
+        public static string AreaTreeJson(this List<Area> list, string ParentId = "0")
+        {
+            StringBuilder strJson = new StringBuilder();
+            List<Area> item = list.FindAll(t => t.ParentId == ParentId);
+            strJson.Append("[");
+            if (item.Count > 0)
+            {
+                item.ForEach(entity =>
+                {
+                    strJson.Append("{");
+                    strJson.Append("\"AreaId\":\"" + entity.AreaId + "\",");
+                    strJson.Append("\"ParentId\":\"" + entity.ParentId + "\",");
+                    strJson.Append("\"AreaName\":\"" + entity.AreaName + "\",");
+                    if (list.FindAll(i => i.ParentId == entity.AreaId).Count > 0)
+                    {
+                        strJson.Append("\"children\":" + AreaTreeJson(list, entity.AreaId) + "");
+                    }else
+                    {
+                        strJson = strJson.Remove(strJson.Length - 1, 1);
+                    }
+
+                    strJson.Append("},");
+                });
+                strJson = strJson.Remove(strJson.Length - 1, 1);
+            }
+            strJson.Append("]");
+            return strJson.ToString();
+        }
     }
 }

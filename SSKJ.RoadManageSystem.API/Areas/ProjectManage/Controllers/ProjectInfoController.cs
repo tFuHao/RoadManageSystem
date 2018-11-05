@@ -47,7 +47,7 @@ namespace SSKJ.RoadManageSystem.API.Areas.ProjectManage.Controllers
                     result = new Tuple<IEnumerable<UserProject>, int>(entity, entity.Count());
                 }
 
-                return Success(new
+                return SuccessData(new
                 {
                     data = result.Item1,
                     count = result.Item2
@@ -88,7 +88,7 @@ namespace SSKJ.RoadManageSystem.API.Areas.ProjectManage.Controllers
                     await userProjectBll.UpdateAsync(up);
 
                     if (result)
-                        return Success();
+                        return SuccessMes();
                     return Fail();
                 }
                 else
@@ -148,7 +148,7 @@ namespace SSKJ.RoadManageSystem.API.Areas.ProjectManage.Controllers
                         var a = await prjInfoBll.DeleteAsync(entity.PrjInfo, dbName);
                         if (a) await Utility.Tools.DataBaseUtils.DeleteDataBase(dbName);
                     }
-                    return Success();
+                    return SuccessMes();
                 }
             }
             catch (Exception ex)
@@ -173,7 +173,7 @@ namespace SSKJ.RoadManageSystem.API.Areas.ProjectManage.Controllers
                 });
                 var result = await userProjectBll.DeleteAsync(list);
                 if (result)
-                    return Success();
+                    return SuccessMes();
                 return Fail();
             }
             catch (Exception ex)

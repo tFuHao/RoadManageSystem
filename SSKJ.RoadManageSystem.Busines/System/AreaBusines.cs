@@ -3,12 +3,13 @@ using SSKJ.RoadManageSystem.IRepository.System;
 using SSKJ.RoadManageSystem.Models.SystemModel;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace SSKJ.RoadManageSystem.Busines.System
 {
-   public class AreaBusines : IAreaBusines
+    public class AreaBusines : IAreaBusines
     {
         private readonly IAreaRepository areaRepository;
         public AreaBusines(IAreaRepository areaRepository)
@@ -69,6 +70,14 @@ namespace SSKJ.RoadManageSystem.Busines.System
         public async Task<IEnumerable<Area>> GetListAsync(string dataBaseName = null)
         {
             return await areaRepository.GetListAsync(dataBaseName);
+        }
+
+        public async Task<string> GetStrTreeAsync()
+        {
+            var data = await areaRepository.GetListAsync(a => a.Layer < 4);
+
+            var temp=TreeData.AreaTreeJson(data.OrderBy(o => o.SortCode).ToList());
+            return temp;
         }
 
         public async Task<bool> UpdateAsync(IEnumerable<Area> entityList, string dataBaseName = null)

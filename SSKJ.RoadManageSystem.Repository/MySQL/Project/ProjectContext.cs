@@ -169,6 +169,12 @@ namespace SSKJ.RoadManageSystem.Repository.MySQL.Project
                 entity.Property(e => e.RoleId).HasColumnType("varchar(50)");
 
                 entity.Property(e => e.Secretkey).HasColumnType("varchar(50)");
+
+                entity.Property(e => e.ProvinceId).HasColumnType("varchar(50)");
+
+                entity.Property(e => e.CityId).HasColumnType("varchar(50)");
+
+                entity.Property(e => e.CountyId).HasColumnType("varchar(50)");
             });
 
             modelBuilder.Entity<UserRelation>(entity =>
