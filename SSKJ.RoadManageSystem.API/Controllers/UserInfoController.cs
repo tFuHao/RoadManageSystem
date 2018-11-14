@@ -55,6 +55,8 @@ namespace SSKJ.RoadManageSystem.API.Controllers
                     var _user = await prjUserBll.GetEntityAsync(UserInfo.UserId, UserInfo.DataBaseName);
                     user = Utility.Tools.MapperUtils.MapTo<RoadManageSystem.Models.ProjectModel.User, UserInfoModel>(_user);
                 }
+                if (string.IsNullOrEmpty(user.HeadIcon))
+                    user.HeadIcon = "/userAvatar/avatar.jpg";
 
                 var authorize = new AuthorizeModel
                 {
@@ -86,7 +88,7 @@ namespace SSKJ.RoadManageSystem.API.Controllers
                     user.UserId = user.Account = user.RoleId = "System";
                     user.RealName = user.RoleName = "系统管理员";
                 }
-                else if (UserInfo.RoleId == "PrjManger")
+                else if (UserInfo.RoleId == "PrjManager")
                 {
                     var _user = await sysUserBll.GetEntityAsync(UserInfo.UserId);
                     user = Utility.Tools.MapperUtils.MapTo<User, UserInfoModel>(_user);
@@ -103,6 +105,8 @@ namespace SSKJ.RoadManageSystem.API.Controllers
                     else
                         user.RoleName = role?.FullName;
                 }
+                if (string.IsNullOrEmpty(user.HeadIcon))
+                    user.HeadIcon = "/userAvatar/avatar.jpg";
 
                 var area = await areaBll.GetListAsync();
                 var sheng = area.SingleOrDefault(a => a.AreaId == user.ProvinceId);

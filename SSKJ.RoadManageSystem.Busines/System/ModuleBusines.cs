@@ -83,6 +83,11 @@ namespace SSKJ.RoadManageSystem.Busines.System
             return TreeData.ModuleTreeJson(data.ToList().OrderBy(o => o.SortCode).ToList());
         }
 
+        public string ModuleListToTree(List<Module> list)
+        {
+            return TreeData.ModuleTreeJson(list.OrderBy(o => o.SortCode).ToList());
+        }
+
         public async Task<bool> UpdateAsync(IEnumerable<Module> entityList, string dataBaseName = null)
         {
             return await moduleRepository.UpdateAsync(entityList, dataBaseName);

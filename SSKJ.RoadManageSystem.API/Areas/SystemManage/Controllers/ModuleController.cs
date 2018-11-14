@@ -60,19 +60,30 @@ namespace SSKJ.RoadManageSystem.API.Areas.SystemManage.Controllers
         [HttpGet]
         public async Task<IActionResult> GetColumnTreeGrid(string moduleId)
         {
-            IEnumerable<ModuleColumn> data = null;
+            var data = "";
             if (!string.IsNullOrEmpty(moduleId))
-                data = await columnBll.GetListAsync(f => f.ModuleId.Equals(moduleId));
+                data = await columnBll.GetTreeListAsync(f => f.ModuleId.Equals(moduleId));
             else
-                data = await columnBll.GetListAsync();
+                data = await columnBll.GetTreeListAsync(f=>true);
 
-            return SuccessData(data.OrderBy(o => o.SortCode).ToList());
+            return SuccessData(data);
+        }
+        [HttpPost]
+        public IActionResult ColumnListToTree(List<ModuleColumn> list)
+        {
+            return SuccessData(columnBll.ColumnListToTree(list));
         }
 
         [HttpPost]
         public IActionResult ButtonListToTree(List<ModuleButton> list)
         {
             return SuccessData(buttonBll.ButtonListToTree(list));
+        }
+
+        [HttpPost]
+        public IActionResult ModuleListToTree(List<Module> list)
+        {
+            return SuccessData(moduleBll.ModuleListToTree(list));
         }
 
         [HttpPost]

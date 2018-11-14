@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using SSKJ.RoadManageSystem.Models.SystemModel;
@@ -17,5 +18,7 @@ namespace SSKJ.RoadManageSystem.IBusines.System
         /// <param name="dataBaseName">数据库名称</param>
         /// <returns></returns>
         Task<string> GetTreeListAsync(Expression<Func<Module, bool>> where, string dataBaseName = null);
+
+        string ModuleListToTree(List<Module> list);
     }
 }

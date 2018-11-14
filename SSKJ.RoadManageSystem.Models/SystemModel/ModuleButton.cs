@@ -11,5 +11,8 @@
         public int? SortCode { get; set; }
         public string Description { get; set; }
         public string EnCode { get; set; }
+        public string Size { get; set; }
+        public string Style { get; set; }
+        public int? Target { get; set; }
     }
 }

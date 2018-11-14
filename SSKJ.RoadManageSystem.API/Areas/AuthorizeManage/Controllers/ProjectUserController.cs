@@ -50,7 +50,21 @@ namespace SSKJ.RoadManageSystem.API.Areas.AuthorizeManage.Controllers
                 else
                     users = await userBll.GetListAsync(u => u.RoleId != "PrjAdmin", u => u.CreateDate, true, pageSize, pageIndex, UserInfo.DataBaseName);
 
-                return SuccessData(new { data = users.Item1, count = users.Item2 });
+                var roles = await roleBll.GetListAsync(UserInfo.DataBaseName);
+                var temp = users.Item1.Select(user => new User
+                {
+                    UserId = user.UserId,
+                    RoleId = roles.SingleOrDefault(r => r.RoleId == user.RoleId)?.FullName,
+                    Account = user.Account,
+                    RealName = user.RealName,
+                    Gender = user.Gender,
+                    Birthday = user.Birthday,
+                    Mobile = user.Mobile,
+                    Email = user.Email,
+                    EnabledMark = user.EnabledMark
+                });
+
+                return SuccessData(new { data = temp, count = users.Item2 });
             }
             catch (Exception ex)
             {

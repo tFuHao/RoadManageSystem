@@ -102,7 +102,7 @@ namespace SSKJ.RoadManageSystem.Busines.Project
         /// <param name="objectId">用户ID或角色ID</param>
         /// <param name="dataBaseName"></param>
         /// <returns></returns>
-        public async Task<IEnumerable<ModuleButton>> GetButtonAuthorizes(string moduleId, int category, string objectId, string dataBaseName)
+        public async Task<string> GetButtonAuthorizes(string moduleId, int category, string objectId, string dataBaseName)
         {
             var modules = await moduleRepo.GetListAsync(m => m.EnabledMark == 1);
             var buttons = await buttonRepo.GetListAsync();
@@ -147,11 +147,11 @@ namespace SSKJ.RoadManageSystem.Busines.Project
                     _buttons = buttons.ToList().FindAll(m => _modules.Any(id => id == m.ModuleId) && authorizes.Any(a => a.ItemId == m.ModuleButtonId));
                 }
                 else
-                    return _buttons;
+                    return "";
             }
 
             //return TreeData.ButtonTreeJson(buttons.OrderBy(o => o.SortCode).ToList());
-            return _buttons.OrderBy(o => o.SortCode);
+            return _buttons.OrderBy(o => o.SortCode).ToList().ButtonTreeJson();
         }
 
         /// <summary>
@@ -161,7 +161,7 @@ namespace SSKJ.RoadManageSystem.Busines.Project
         /// <param name="objectId">用户ID或角色ID</param>
         /// <param name="dataBaseName"></param>
         /// <returns></returns>
-        public async Task<IEnumerable<ModuleColumn>> GetColumnAuthorizes(string moduleId, int category, string objectId, string dataBaseName)
+        public async Task<string> GetColumnAuthorizes(string moduleId, int category, string objectId, string dataBaseName)
         {
             var modules = await moduleRepo.GetListAsync(m => m.EnabledMark == 1);
             var columns = await columnRepo.GetListAsync();
@@ -191,7 +191,7 @@ namespace SSKJ.RoadManageSystem.Busines.Project
                     var _modules = GetModules(modules, moduleId).Select(m => m.ModuleId).ToList();
                     _modules.Add(moduleId);
 
-                    _columns = _columns.ToList().FindAll(m => _modules.Any(id => id == m.ModuleId));
+                    _columns = columns.ToList().FindAll(m => _modules.Any(id => id == m.ModuleId));
                 }
             }
             else
@@ -205,10 +205,10 @@ namespace SSKJ.RoadManageSystem.Busines.Project
                     _columns = columns.ToList().FindAll(m => _modules.Any(id => id == m.ModuleId) && authorizes.Any(a => a.ItemId == m.ModuleColumnId));
                 }
                 else
-                    return _columns;
+                    return "";
             }
 
-            return _columns.ToList().OrderBy(o => o.SortCode);
+            return _columns.ToList().OrderBy(o => o.SortCode).ToList().ColumnTreeJson();
         }
         /// <summary>
         /// 获取路线权限

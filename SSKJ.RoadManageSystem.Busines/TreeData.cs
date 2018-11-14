@@ -53,9 +53,41 @@ namespace SSKJ.RoadManageSystem.Busines
                     strJson.Append("\"ParentId\":\"" + entity.ParentId + "\",");
                     strJson.Append("\"FullName\":\"" + entity.FullName + "\",");
                     strJson.Append("\"EnCode\":\"" + entity.EnCode + "\",");
+                    strJson.Append("\"Icon\":\"" + entity.Icon + "\",");
+                    strJson.Append("\"Size\":\"" + entity.Size + "\",");
+                    strJson.Append("\"Style\":\"" + entity.Style + "\",");
                     strJson.Append("\"SortCode\":\"" + entity.SortCode + "\",");
+                    strJson.Append("\"Target\":\"" + entity.Target + "\",");
                     strJson.Append("\"Description\":\"" + entity.Description + "\",");
                     strJson.Append("\"children\":" + ButtonTreeJson(list, entity.ModuleButtonId) + "");
+                    strJson.Append("},");
+                });
+                strJson = strJson.Remove(strJson.Length - 1, 1);
+            }
+            strJson.Append("]");
+            return strJson.ToString();
+        }
+        public static string ColumnTreeJson(this List<ModuleColumn> list, string ParentId = "0")
+        {
+            StringBuilder strJson = new StringBuilder();
+            List<ModuleColumn> item = list.FindAll(t => t.ParentId == ParentId);
+            strJson.Append("[");
+            if (item.Count > 0)
+            {
+                item.ForEach(entity =>
+                {
+                    strJson.Append("{");
+                    strJson.Append("\"ModuleColumnId\":\"" + entity.ModuleColumnId + "\",");
+                    strJson.Append("\"ModuleId\":\"" + entity.ModuleId + "\",");
+                    strJson.Append("\"ParentId\":\"" + entity.ParentId + "\",");
+                    strJson.Append("\"FullName\":\"" + entity.FullName + "\",");
+                    strJson.Append("\"EnCode\":\"" + entity.EnCode + "\",");
+                    strJson.Append("\"Width\":\"" + entity.Width + "\",");
+                    strJson.Append("\"Align\":\"" + entity.Align + "\",");
+                    strJson.Append("\"SortCode\":\"" + entity.SortCode + "\",");
+                    strJson.Append("\"Target\":\"" + entity.Target + "\",");
+                    strJson.Append("\"Description\":\"" + entity.Description + "\",");
+                    strJson.Append("\"children\":" + ColumnTreeJson(list, entity.ModuleColumnId) + "");
                     strJson.Append("},");
                 });
                 strJson = strJson.Remove(strJson.Length - 1, 1);
@@ -108,7 +140,8 @@ namespace SSKJ.RoadManageSystem.Busines
                     if (list.FindAll(i => i.ParentId == entity.AreaId).Count > 0)
                     {
                         strJson.Append("\"children\":" + AreaTreeJson(list, entity.AreaId) + "");
-                    }else
+                    }
+                    else
                     {
                         strJson = strJson.Remove(strJson.Length - 1, 1);
                     }
