@@ -347,7 +347,7 @@ namespace SSKJ.RoadManageSystem.Busines.Project
                 TreeEntity tree = new TreeEntity
                 {
                     id = column.ModuleColumnId,
-                    parentId = column.ParentId ?? column.ModuleId,
+                    parentId = column.ParentId=="0" ? column.ModuleId:column.ParentId,
                     label = column.FullName
                 };
                 columnTreeList.Add(tree);
