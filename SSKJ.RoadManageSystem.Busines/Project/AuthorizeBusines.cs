@@ -82,7 +82,7 @@ namespace SSKJ.RoadManageSystem.Busines.Project
                 else
                 {
                     var authorizes = await authorizeRepo.GetListAsync(a => a.Category == category && a.ObjectId == objectId && a.ItemType == 1, dataBaseName);
-                    _modules = modules.ToList().FindAll(m => m.ModuleId == moduleId && m.ParentId != "0" && authorizes.Any(a => a.ItemId == m.ModuleId));
+                    _modules = modules.ToList().FindAll(m => m.ParentId != "0" && authorizes.Any(a => a.ItemId == m.ModuleId));
                 }
             }
 
