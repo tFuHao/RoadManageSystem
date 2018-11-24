@@ -18,6 +18,6 @@ namespace SSKJ.RoadManageSystem.Models.SystemModel
         public DateTime? CreateDate { get; set; }
         public string CreateUserId { get; set; }
         public DateTime? ModifyDate { get; set; }
-        public string ModifyUserId { get; set; }
+        public string ModifyUserId { get; set; }        
     }
 }

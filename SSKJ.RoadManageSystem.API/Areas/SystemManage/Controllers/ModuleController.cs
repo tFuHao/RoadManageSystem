@@ -37,7 +37,7 @@ namespace SSKJ.RoadManageSystem.API.Areas.SystemManage.Controllers
                 else
                     data = await moduleBll.GetTreeListAsync(f => true);
 
-                return Success(data);
+                return SuccessData(data);
             }
             catch (Exception ex)
             {
@@ -54,25 +54,36 @@ namespace SSKJ.RoadManageSystem.API.Areas.SystemManage.Controllers
             else
                 data = await buttonBll.GetTreeListAsync(f => true);
 
-            return Success(data);
+            return SuccessData(data);
         }
 
         [HttpGet]
         public async Task<IActionResult> GetColumnTreeGrid(string moduleId)
         {
-            IEnumerable<ModuleColumn> data = null;
+            var data = "";
             if (!string.IsNullOrEmpty(moduleId))
-                data = await columnBll.GetListAsync(f => f.ModuleId.Equals(moduleId));
+                data = await columnBll.GetTreeListAsync(f => f.ModuleId.Equals(moduleId));
             else
-                data = await columnBll.GetListAsync();
+                data = await columnBll.GetTreeListAsync(f=>true);
 
-            return Success(data.OrderBy(o => o.SortCode).ToList());
+            return SuccessData(data);
+        }
+        [HttpPost]
+        public IActionResult ColumnListToTree(List<ModuleColumn> list)
+        {
+            return SuccessData(columnBll.ColumnListToTree(list));
         }
 
         [HttpPost]
         public IActionResult ButtonListToTree(List<ModuleButton> list)
         {
-            return Success(buttonBll.ButtonListToTree(list));
+            return SuccessData(buttonBll.ButtonListToTree(list));
+        }
+
+        [HttpPost]
+        public IActionResult ModuleListToTree(List<Module> list)
+        {
+            return SuccessData(moduleBll.ModuleListToTree(list));
         }
 
         [HttpPost]
@@ -124,7 +135,7 @@ namespace SSKJ.RoadManageSystem.API.Areas.SystemManage.Controllers
                             return Fail();
                         }
                     }
-                    return Success();
+                    return SuccessMes();
                 }
                 return Fail();
             }
@@ -150,7 +161,7 @@ namespace SSKJ.RoadManageSystem.API.Areas.SystemManage.Controllers
                 await columnBll.DeleteAsync(columns);
                 await moduleBll.DeleteAsync(modules);
 
-                return Success();
+                return SuccessMes();
             }
             catch (Exception ex)
             {

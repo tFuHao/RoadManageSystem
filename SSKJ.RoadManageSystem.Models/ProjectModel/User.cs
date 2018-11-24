@@ -26,5 +26,8 @@ namespace SSKJ.RoadManageSystem.Models.ProjectModel
         public string CreateUserId { get; set; }
         public DateTime? ModifyDate { get; set; }
         public string ModifyUserId { get; set; }
+        public string ProvinceId { get; set; }
+        public string CityId { get; set; }
+        public string CountyId { get; set; }
     }
 }

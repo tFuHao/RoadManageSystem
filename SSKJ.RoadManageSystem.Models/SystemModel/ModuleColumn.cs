@@ -9,5 +9,8 @@
         public int? SortCode { get; set; }
         public string Description { get; set; }
         public string EnCode { get; set; }
+        public string Align { get; set; }
+        public double? Width { get; set; }
+        public int? Target { get; set; }
     }
 }

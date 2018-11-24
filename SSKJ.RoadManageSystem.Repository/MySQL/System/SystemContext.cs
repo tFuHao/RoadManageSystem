@@ -112,7 +112,13 @@ namespace SSKJ.RoadManageSystem.Repository.MySQL.System
 
                 entity.Property(e => e.Description).HasColumnType("varchar(200)");
 
+                entity.Property(e => e.Size).HasColumnType("varchar(50)");
+
+                entity.Property(e => e.Style).HasColumnType("varchar(500)");
+
                 entity.Property(e => e.SortCode).HasColumnType("int(11)");
+
+                entity.Property(e => e.Target).HasColumnType("int(11)");
             });
 
             modelBuilder.Entity<ModuleColumn>(entity =>
@@ -129,9 +135,15 @@ namespace SSKJ.RoadManageSystem.Repository.MySQL.System
 
                 entity.Property(e => e.EnCode).HasColumnType("varchar(50)");
 
+                entity.Property(e => e.Width).HasColumnType("double(18, 4)");
+
+                entity.Property(e => e.Align).HasColumnType("varchar(50)");
+
                 entity.Property(e => e.ParentId).HasColumnType("varchar(50)");
 
                 entity.Property(e => e.SortCode).HasColumnType("int(11)");
+
+                entity.Property(e => e.Target).HasColumnType("int(11)");
             });
 
             modelBuilder.Entity<SysLog>(entity =>

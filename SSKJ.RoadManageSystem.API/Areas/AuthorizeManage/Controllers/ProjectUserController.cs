@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting.Internal;
 using Microsoft.AspNetCore.Mvc;
 using SSKJ.RoadManageSystem.API.Controllers;
 using SSKJ.RoadManageSystem.IBusines.Project;
@@ -23,8 +24,9 @@ namespace SSKJ.RoadManageSystem.API.Areas.AuthorizeManage.Controllers
         private readonly IButtonBusines buttonBll;
         private readonly IColumnBusines columnBll;
         private readonly IRoleBusines roleBll;
+        private readonly HostingEnvironment he;
 
-        public ProjectUserController(IAuthorizeBusines authBll, IBusines.Project.IUserBusines userBll, IUserRelationBusines roleUserBll, IRouteBusines routeBll, IModuleBusines moduleBll, IButtonBusines buttonBll, IColumnBusines columnBll, IRoleBusines roleBll)
+        public ProjectUserController(IAuthorizeBusines authBll, IBusines.Project.IUserBusines userBll, IUserRelationBusines roleUserBll, IRouteBusines routeBll, IModuleBusines moduleBll, IButtonBusines buttonBll, IColumnBusines columnBll, IRoleBusines roleBll, HostingEnvironment he)
         {
             this.authBll = authBll;
             this.userBll = userBll;
@@ -34,6 +36,7 @@ namespace SSKJ.RoadManageSystem.API.Areas.AuthorizeManage.Controllers
             this.buttonBll = buttonBll;
             this.columnBll = columnBll;
             this.roleBll = roleBll;
+            this.he = he;
         }
 
         [HttpGet]
@@ -47,7 +50,21 @@ namespace SSKJ.RoadManageSystem.API.Areas.AuthorizeManage.Controllers
                 else
                     users = await userBll.GetListAsync(u => u.RoleId != "PrjAdmin", u => u.CreateDate, true, pageSize, pageIndex, UserInfo.DataBaseName);
 
-                return Success(new { data = users.Item1, count = users.Item2 });
+                var roles = await roleBll.GetListAsync(UserInfo.DataBaseName);
+                var temp = users.Item1.Select(user => new User
+                {
+                    UserId = user.UserId,
+                    RoleId = roles.SingleOrDefault(r => r.RoleId == user.RoleId)?.FullName,
+                    Account = user.Account,
+                    RealName = user.RealName,
+                    Gender = user.Gender,
+                    Birthday = user.Birthday,
+                    Mobile = user.Mobile,
+                    Email = user.Email,
+                    EnabledMark = user.EnabledMark
+                });
+
+                return SuccessData(new { data = temp, count = users.Item2 });
             }
             catch (Exception ex)
             {
@@ -60,7 +77,7 @@ namespace SSKJ.RoadManageSystem.API.Areas.AuthorizeManage.Controllers
             try
             {
                 var roles = await roleBll.GetListAsync(UserInfo.DataBaseName);
-                return Success(roles);
+                return SuccessData(roles);
             }
             catch (Exception ex)
             {
@@ -73,7 +90,7 @@ namespace SSKJ.RoadManageSystem.API.Areas.AuthorizeManage.Controllers
             try
             {
                 var result = await authBll.GetModuleAndRoutePermission(category, objectId, UserInfo.DataBaseName);
-                return Success(result);
+                return SuccessData(result);
             }
             catch (Exception ex)
             {
@@ -84,7 +101,7 @@ namespace SSKJ.RoadManageSystem.API.Areas.AuthorizeManage.Controllers
         public IActionResult GetButtonAndColumnTree(List<string> halfKeys, List<string> checkedKeys, string strAuthorizes, string strModules, string strButtons, string strColumns)
         {
             var result = authBll.GetButtonAndColumnPermission(halfKeys, checkedKeys, strAuthorizes, strModules, strButtons, strColumns);
-            return Success(result);
+            return SuccessData(result);
         }
 
         [HttpPost]
@@ -130,7 +147,7 @@ namespace SSKJ.RoadManageSystem.API.Areas.AuthorizeManage.Controllers
                         IsDefault = 1
                     };
                     await roleUserBll.CreateAsync(ruEntity, UserInfo.DataBaseName);
-                    return Success();
+                    return SuccessMes();
 
                 }
                 else
@@ -152,10 +169,16 @@ namespace SSKJ.RoadManageSystem.API.Areas.AuthorizeManage.Controllers
                 var result = await userBll.DeleteAsync(list, UserInfo.DataBaseName);
                 if (result)
                 {
+                    list.ForEach(id =>
+                    {
+                        var path = he.WebRootPath + "\\userAvatar\\" + id + "\\";
+                        if (System.IO.Directory.Exists(path))
+                            System.IO.Directory.Delete(path, true);
+                    });
                     await authBll.DeleteAsync(userAuth, UserInfo.DataBaseName);
                     await roleUserBll.DeleteAsync(roleUser, UserInfo.DataBaseName);
 
-                    return Success();
+                    return SuccessMes();
                 }
                 return Fail();
             }
@@ -172,7 +195,7 @@ namespace SSKJ.RoadManageSystem.API.Areas.AuthorizeManage.Controllers
             {
                 var result = await authBll.SavePermission(userId, UserInfo.UserId, 1, modules, buttons, columns, routes, UserInfo.DataBaseName);
                 if (result)
-                    return Success();
+                    return SuccessMes();
                 return Fail();
             }
             catch (Exception ex)
@@ -197,7 +220,7 @@ namespace SSKJ.RoadManageSystem.API.Areas.AuthorizeManage.Controllers
 
                 var result = await userBll.UpdateAsync(user, UserInfo.DataBaseName);
                 if (result)
-                    return Success();
+                    return SuccessMes();
                 return Fail();
             }
             catch (Exception ex)
@@ -221,7 +244,7 @@ namespace SSKJ.RoadManageSystem.API.Areas.AuthorizeManage.Controllers
 
                 var result = await userBll.UpdateAsync(user, UserInfo.DataBaseName);
                 if (result)
-                    return Success();
+                    return SuccessMes();
                 return Fail();
             }
             catch (Exception ex)

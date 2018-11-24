@@ -18,6 +18,7 @@ namespace SSKJ.RoadManageSystem.API.Models
         public string Mobile { get; set; }
         public string Email { get; set; }
         public string RoleId { get; set; }
+        public string RoleName { get; set; }
         public DateTime? FirstVisit { get; set; }
         public DateTime? LastVisit { get; set; }
         public int? LogOnCount { get; set; }
@@ -28,5 +29,6 @@ namespace SSKJ.RoadManageSystem.API.Models
         public string ProvinceId { get; set; }
         public string CityId { get; set; }
         public string CountyId { get; set; }
+        public string Area { get; set; }
     }
 }

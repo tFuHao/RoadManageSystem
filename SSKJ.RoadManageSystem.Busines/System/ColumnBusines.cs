@@ -3,6 +3,7 @@ using SSKJ.RoadManageSystem.IRepository.System;
 using SSKJ.RoadManageSystem.Models.SystemModel;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
@@ -16,6 +17,12 @@ namespace SSKJ.RoadManageSystem.Busines.System
         {
             this.columnRepository = columnRepository;
         }
+
+        public string ColumnListToTree(List<ModuleColumn> list)
+        {
+            return TreeData.ColumnTreeJson(list.OrderBy(o => o.SortCode).ToList());
+        }
+
         public async Task<bool> CreateAsync(ModuleColumn entity, string dataBaseName = null)
         {
             return await columnRepository.CreateAsync(entity, dataBaseName);
@@ -69,6 +76,13 @@ namespace SSKJ.RoadManageSystem.Busines.System
         public async Task<IEnumerable<ModuleColumn>> GetListAsync(string dataBaseName = null)
         {
             return await columnRepository.GetListAsync(dataBaseName);
+        }
+
+        public async Task<string> GetTreeListAsync(Expression<Func<ModuleColumn, bool>> where, string dataBaseName = null)
+        {
+            var data = await columnRepository.GetListAsync(where);
+
+            return TreeData.ColumnTreeJson(data.ToList().OrderBy(o => o.SortCode).ToList());
         }
 
         public async Task<bool> UpdateAsync(IEnumerable<ModuleColumn> entityList, string dataBaseName = null)
